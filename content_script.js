@@ -1,14 +1,20 @@
-window.setInterval(bodywalk, 1000)
+var name = "";
+var color = "";
+var custom_css = "";
+var color_set = false;
+var css_set = false;
+
+for (i = 0; i < 20; i++) { 
+    window.setTimeout(bodywalk, 1000 * i);
+}
 
 function bodywalk() {
+	getData();
 	walk(document.body);
 }
 
 function walk(node)
 {
-	if(node == document.body) {
-		console.log('running replacer');
-	}
 	// I stole this function from here:
 	// http://is.gd/mwZp7E
 
@@ -39,18 +45,42 @@ function walk(node)
 
 function handleText(elementNode)
 {
-	var v = elementNode.innerHTML;
-	v = v.replace(/\btim schwartz\b/g, '<span class="redacted">tim schwartz</span>');
-	v = v.replace(/\bTim Schwartz\b/g, '<span class="redacted">Tim Schwartz</span>');
-	v = v.replace(/\btim\b/g, '<span class="redacted">tim</span>');
-	v = v.replace(/\bTim\b/g, '<span class="redacted">Tim</span>');
-	v = v.replace(/\bschwartz\b/g, '<span class="redacted">schwartz</span>');
-	v = v.replace(/\bSchwartz\b/g, '<span class="redacted">Schwartz</span>');
-
-	if( v != elementNode.innerHTML ) {
-		console.log(elementNode);
+    if ( name != "" ) {
+		var v = elementNode.innerHTML;
+		v = v.replace(new RegExp(name, 'gi'), '<span class="redacted">'+name+'</span>');
+		var words = name.split(" ");
+		while (words.length) {
+			var word = words.pop();
+			v = v.replace(new RegExp(word, 'gi'), '<span class="redacted">'+word+'</span>');		
+		}
+		elementNode.innerHTML = v;
 	}
-	elementNode.innerHTML = v;
+}
+
+function getData() {
+	chrome.storage.local.get('name', function (data) {
+        name = data.name;
+    });
+
+	chrome.storage.local.get('color', function (data) {
+        color = data.color;
+        if( color != data.color || ! color_set ) {
+			var css = document.createElement("style");
+			css.type = "text/css";
+			css.innerHTML = " .redacted { background-color: "+color+" !important; color: "+color+" !important; }";
+			document.body.appendChild(css);
+        }
+    });
+
+	chrome.storage.local.get('custom_css', function (data) {
+        custom_css = data.custom_css;
+        if( custom_css != data.custom_css || ! css_set ) {
+			var css = document.createElement("style");
+			css.type = "text/css";
+			css.innerHTML = custom_css;
+			document.body.appendChild(css);
+        }
+    });
 }
 
 
