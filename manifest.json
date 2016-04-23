@@ -3,14 +3,16 @@
 	"name": "Name Redactor",
 	"version": "1.0",
 	"description": "Redacts someone's name (first / last) from all webpages.",
+	"permissions": [
+		"storage"
+	],
 	"content_scripts":
 	[
 		{
 			"matches": ["*://*/*"],
 			"js": ["content_script.js"],
-			"css": ["redact.css"],
 			"run_at": "document_end"
 		}
-	]
+	],
+    "options_page": "options.html"
 }
-
