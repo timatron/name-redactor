@@ -4,7 +4,7 @@ var custom_css = "";
 var color_set = false;
 var css_set = false;
 
-for (i = 0; i < 20; i++) { 
+for (i = 0; i < 10; i++) { 
     window.setTimeout(bodywalk, 1000 * i);
 }
 
